@@ -23,4 +23,10 @@ VALUES (134, 'Dylan', 'A', 'Word', '26524856Z' , 'Customer Relations' ),
 (133, 'Dylan', 'A', 'Word', '26524856Z' , 'Customer Relations' ),
 (135, 'Dylan', 'A', 'Word', '26524856Z' , 'Customer Relations' );
 
-SELECT * FROM tblEmployee;
+SELECT * FROM tblEmployee WHERE EmployeeFirstName LIKE 'Dyl__'; 
+
+-- % = 0 to infinity 
+-- _ = 1 Character 
+-- [A-G] = in the range 
+-- [AGQ] = A, G or Q
+-- [^AGQ] = NOT A, G or Q
