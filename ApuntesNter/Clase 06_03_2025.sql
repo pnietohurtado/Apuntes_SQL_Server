@@ -1,5 +1,6 @@
 -- Clase de SQL Server del 06.03.2025 
-
+USE AdventureWorks2022
+GO
 /*
 	Bibliografía: 
 		
@@ -84,3 +85,11 @@ SELECT
 		Else 'Me meo' 
 	END AS categoria_salarial
 FROM HumanResources.Department hd; 
+
+
+
+
+
+DECLARE @numero INT SET @numero = 13; 
+SELECT  TOP 1 @numero = SalariedFlag FROM HumanResources.Employee ; 
+SELECT @numero; 
