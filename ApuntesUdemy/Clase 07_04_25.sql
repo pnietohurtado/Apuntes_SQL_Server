@@ -79,11 +79,84 @@ CREATE TRIGGER NameOfTrigger
 GO
 
 BEGIN TRAN 
-	SELECT * FROM vista_departamentos  vd WHERE vd.EmployeeNumber = 132 
+	-- SELECT * FROM vista_departamentos  vd WHERE vd.EmployeeNumber = 132 
 	DELETE FROM vista_departamentos
 	WHERE EmployeeNumber = 132 
-	SELECT * FROM vista_departamentos WHERE EmployeeNumber = 132 
+	-- SELECT * FROM vista_departamentos WHERE EmployeeNumber = 132 
 ROLLBACK TRAN 
+GO
 
 
 
+-- TRIGGERS (NESTED TRIGGERS) 
+DROP TRIGGER NameTrigger
+GO
+
+ALTER TRIGGER NameTrigger 
+	ON tblTransaction 
+	AFTER DELETE, INSERT, UPDATE 
+	AS 
+	BEGIN 
+		IF  @@NESTLEVEL = 1  -- En el caso de que el NEST LEVEL sea igual a 1 veremos los dos SELECT 
+		BEGIN 
+			SELECT *, 'Inserted - tblTransaction' FROM inserted
+			SELECT *, 'Deleted - tblTransaction' FROM deleted
+		END 
+	END 
+GO 
+
+
+BEGIN TRAN 
+	INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) VALUES 
+	(123, '2015-07-10', 123), (132, '2015-07-10', 132) 
+ROLLBACK TRAN
+GO
+
+
+ALTER TRIGGER row_count 
+	ON dbo.tblTransaction 
+	AFTER DELETE, INSERT, UPDATE 
+	AS 
+	BEGIN 
+		-- SET NOCOUNT ON -- Para que no aparezca cuantas filas han sido afectadas 
+		BEGIN 
+			IF @@ROWCOUNT > 0 -- Si se añaden cierta cantidad de filas, vamos a desencadenar una acción de lo contrario no dirá nada 
+			BEGIN 
+				SELECT *, 'Inserted - tblTransaction' AS tabla_transacciones FROM inserted
+				SELECT *, 'Deleted - tblTransaction' AS tabla_transacciones FROM deleted
+			END 
+		END
+	END 
+GO
+
+BEGIN TRAN 
+	INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) VALUES 
+	(123, '2015-07-10', 123)
+ROLLBACK TRAN 
+GO
+
+BEGIN TRAN -- Cuando hacemos un UPDATE, vamos a obtener tanto el mensaje de insertar como el de eliminar, donde vamos a poder ver el parámetro cambiado y el parámetro nuevo
+	UPDATE tblTransaction SET DateOfTransaction = '2015-07-12' WHERE DateOfTransaction = '2015-07-11' AND Amount = -770.86
+ROLLBACK TRAN 
+GO
+
+ALTER TRIGGER row_count 
+	ON tblTransaction 
+	AFTER DELETE, INSERT, UPDATE 
+	AS 
+	BEGIN 
+		BEGIN 
+			-- IF UPDATE(DateOfTransaction) 
+			IF COLUMNS_UPDATED() & 2 = 2 -- Básicamente nos va a mostrar las filas actualizadas las cuales sean iguales a 2 ( Es decir, que se trate de la fila 2 de la tabla ) 
+			BEGIN 
+				SELECT *, 'Inserted - tblTransaction' AS tabla_transacciones FROM inserted
+				SELECT *, 'Deleted - tblTransaction' AS tabla_transacciones FROM deleted
+			END 
+		END 
+	END 
+GO
+
+BEGIN TRAN -- Cuando hacemos un UPDATE, vamos a obtener tanto el mensaje de insertar como el de eliminar, donde vamos a poder ver el parámetro cambiado y el parámetro nuevo
+	UPDATE tblTransaction SET DateOfTransaction = '2015-07-12' WHERE DateOfTransaction = '2015-07-11' AND Amount = -770.86
+ROLLBACK TRAN 
+GO
