@@ -136,3 +136,18 @@ DECLARE @AvegBalance INT, @ReturnStatus INT  -- En este caso el "Return_Status" 
 EXEC @ReturnStatus = AverageBalance 4, 5, @AvegBalance OUTPUT 
 SELECT @AvegBalance AS Average_Balance, @ReturnStatus AS Return_Status 
 GO
+
+
+
+
+
+
+-- OVER() 
+USE Udemy;
+
+SELECT 
+		A.EmployeeNumber, 
+		A.AttendanceMonth, 
+		A.NumberAttendance
+FROM tblEmployee E 
+	JOIN [dbo].[tblAttendance] A ON E.EmployeeNumber = A.EmployeeNumber 
