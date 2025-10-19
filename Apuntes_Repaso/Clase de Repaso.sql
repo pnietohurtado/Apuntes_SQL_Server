@@ -41,3 +41,26 @@ ORDER BY DATEPART(MONTH, DateOfBirth)
 
 
 
+
+SELECT 
+	DATENAME(MONTH, DateOfBirth) AS MonthNumber, 
+	COUNT(*) AS NumberEmployees, 
+	COUNT(EmployeeMiddleName) AS NumberOfMiddleNames, 
+	COUNT(*) - COUNT(EmployeeMiddleName) AS NumberOfNULLMiddleNames 
+FROM tblEmployee
+GROUP BY DATENAME(MONTH, DateOfBirth ) , DATEPART(MONTH, DateOfBirth)
+-- HAVING COUNT(EmployeeMiddleName) IS NULL
+ORDER BY DATEPART(MONTH, DateOfBirth)
+
+
+
+SELECT 
+	DATENAME(MONTH, DateOfBirth) AS MonthNumber, 
+	COUNT(*) AS NumberEmployees, 
+	COUNT(EmployeeMiddleName) AS NumberOfMiddleNames, 
+	COUNT(*) - COUNT(EmployeeMiddleName) AS NumberOfNULLMiddleNames 
+FROM tblEmployee
+GROUP BY DATENAME(MONTH, DateOfBirth ) , DATEPART(MONTH, DateOfBirth)
+HAVING DATENAME(MONTH, DateOfBirth) LIKE 'Enero' 
+ORDER BY DATEPART(MONTH, DateOfBirth)
+
