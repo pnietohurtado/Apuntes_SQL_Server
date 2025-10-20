@@ -70,3 +70,12 @@ FROM
 FROM tblEmployee t
 GROUP BY t.Department
 ) as NewTable 
+
+
+--
+--SELECT 
+--	DISTINCT t.Department, 
+--	CONVERT((VARCHAR(20),N'') AS DepartmentHead 
+--INTO tblDepartment t
+--FROM tblEmployee
+--
