@@ -49,3 +49,24 @@ FROM tblEmployee e
 	LEFT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
 WHERE e.EmployeeNumber > 1010
 GROUP BY e.EmployeeFirstName, e.EmployeeLastName, e.EmployeeNumber
+
+
+
+-- Darnos el número de empleados por departamento 
+SELECT 
+	t.Department, 
+	COUNT(*) AS NumberOfDepartment 
+FROM tblEmployee t
+GROUP BY t.Department
+GO; 
+
+
+-- Contar el número de departamentos que hay 
+SELECT COUNT(NewTable.Department ) AS NumberOfDepartments 
+FROM
+(SELECT 
+	t.Department, 
+	COUNT(*) AS NumberOfDepartment 
+FROM tblEmployee t
+GROUP BY t.Department
+) as NewTable 
