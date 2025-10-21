@@ -79,3 +79,18 @@ GROUP BY t.Department
 --INTO tblDepartment t
 --FROM tblEmployee
 --
+
+
+
+SELECT 
+	DISTINCT d.Department AS Department, 
+	SUM(tr.Amount) AS Total 
+FROM tblDepartment d
+	LEFT JOIN tblEmployee t ON d.Department = t.Department 
+	LEFT JOIN tblTransaction tr ON t.EmployeeNumber = tr.EmployeeNumber
+GROUP BY d.Department
+ORDER BY SUM(tr.Amount) DESC
+
+
+INSERT INTO tblDepartment(Department,DepartmentHead) VALUES ('Accounts', 'James'); 
+DELETE tblDepartment WHERE tblDepartment.DepartmentHead LIKE 'James'; 
