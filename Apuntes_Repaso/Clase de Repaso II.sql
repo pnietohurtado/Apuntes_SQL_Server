@@ -94,3 +94,56 @@ ORDER BY SUM(tr.Amount) DESC
 
 INSERT INTO tblDepartment(Department,DepartmentHead) VALUES ('Accounts', 'James'); 
 DELETE tblDepartment WHERE tblDepartment.DepartmentHead LIKE 'James'; 
+
+
+
+
+
+SELECT 
+	e.EmployeeNumber AS ENumber, 
+	e.EmployeeFirstName AS EFirstName, 
+	e.EmployeeLastName AS ELastName, 
+	t.EmployeeNumber AS TNumber, 
+	SUM(t.Amount) AS TotalAmount 
+FROM tblEmployee e 
+	LEFT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
+WHERE t.EmployeeNumber IS NULL 
+GROUP BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber
+ORDER BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber ASC 
+
+ -- subconsulta 
+
+SELECT tble.EFirstName, tble.ELastName, tble.ENumber
+FROM (
+SELECT 
+	e.EmployeeNumber AS ENumber, 
+	e.EmployeeFirstName AS EFirstName, 
+	e.EmployeeLastName AS ELastName, 
+	t.EmployeeNumber AS TNumber, 
+	SUM(t.Amount) AS TotalAmount 
+FROM tblEmployee e 
+	LEFT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
+WHERE t.EmployeeNumber IS NULL 
+GROUP BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber
+-- ORDER BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber ASC 
+) AS tble
+WHERE tble.TNumber IS NULL 
+
+
+
+
+SELECT *
+FROM (
+SELECT 
+	e.EmployeeNumber AS ENumber, 
+	e.EmployeeFirstName AS EFirstName, 
+	e.EmployeeLastName AS ELastName, 
+	t.EmployeeNumber AS TNumber, 
+	SUM(t.Amount) AS TotalAmount 
+FROM tblEmployee e 
+	RIGHT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
+WHERE t.EmployeeNumber IS NULL 
+GROUP BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber
+-- ORDER BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber ASC 
+) AS tble
+WHERE tble.ENumber IS NULL 
