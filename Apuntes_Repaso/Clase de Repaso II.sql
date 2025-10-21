@@ -142,8 +142,46 @@ SELECT
 	SUM(t.Amount) AS TotalAmount 
 FROM tblEmployee e 
 	RIGHT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
-WHERE t.EmployeeNumber IS NULL 
+-- WHERE t.EmployeeNumber IS NULL 
 GROUP BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber
 -- ORDER BY e.EmployeeNumber, e.EmployeeFirstName, e.EmployeeLastName, t.EmployeeNumber ASC 
 ) AS tble
 WHERE tble.ENumber IS NULL 
+
+
+
+
+DELETE tblTransaction
+FROM tblEmployee e 
+	RIGHT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
+WHERE e.EmployeeNumber IS NULL 
+
+
+SELECT * FROM tblTransaction
+
+
+BEGIN tran
+
+SELECT COUNT(*) FROM tblTransaction
+
+DELETE tblTransaction
+FROM tblTransaction
+WHERE EmployeeNumber IN( 
+SELECT NumberTran
+FROM (
+SELECT 
+	e.EmployeeFirstName AS FirstName, 
+	e.EmployeeLastName AS LastName, 
+	e.EmployeeNumber AS Number, 
+	t.EmployeeNumber AS NumberTran, 
+	SUM(t.Amount) AS Total 
+FROM tblEmployee e
+	LEFT JOIN tblTransaction t ON e.EmployeeNumber = t.EmployeeNumber
+WHERE t.EmployeeNumber IS NULL 
+GROUP BY e.EmployeeFirstName, e.EmployeeLastName, e.EmployeeNumber, t.EmployeeNumber
+-- ORDER BY e.EmployeeFirstName, e.EmployeeLastName, e.EmployeeNumber, t.EmployeeNumber ASC 
+) as newTable )
+
+SELECT COUNT(*) FROM tblTransaction
+
+ROLLBACK TRAN 
