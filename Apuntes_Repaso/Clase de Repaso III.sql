@@ -50,3 +50,22 @@ HAVING COUNT(e.EmployeeGovernmentID) > 1
 SELECT * FROM tblEmployee WHERE EmployeeGovernmentID IN ('HN513777D')
 SELECT * FROM tblEmployee
 
+
+SELECT * FROM tblTransaction
+
+ALTER TABLE tblTransaction ADD DateOfEntry DATETIME 
+ALTER TABLE tblTransaction ADD CONSTRAINT defDateOfEntry DEFAULT GETDATE() FOR DateOfEntry -- Default Value 
+
+
+BEGIN TRAN 
+
+SELECT * FROM tblTransaction WHERE EmployeeNumber < 3
+
+INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) 
+VALUES (1, '2014-01-01', 1)
+INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber, DateOfEntry) 
+VALUES (1, '2014-01-02', 1, '2013-01-01')
+
+SELECT * FROM tblTransaction WHERE EmployeeNumber < 3
+
+ROLLBACK TRAN 
