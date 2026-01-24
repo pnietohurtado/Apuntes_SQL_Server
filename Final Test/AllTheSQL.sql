@@ -1,5 +1,17 @@
 -- Summary of the sql udemy course 
 
+-- Bibliografía 
+
+	-- #1. "Alter" command inside the tblEmployee 
+	-- #2. "Insert" command inside tblEmployee 
+	-- #3. Simple "SELECT" queries (ONLY 'SELECT' queries) 
+		-- #3.1. Where practice 
+		-- #3.2. More complex "SELECT" queries 
+		-- #3.3. "SELECT" interest functions (for functionallity) 
+		-- #3.4 Use of "HAVING" command 
+
+
+
 CREATE TABLE tblEmployee(
 
 	EmployeeNumber INT NOT NULL, 
@@ -27,7 +39,7 @@ GO
 
 -- Insert key factors  
 
--- #1. "Insert" command inside tblEmployee 
+-- #2. "Insert" command inside tblEmployee 
 
 INSERT INTO tblEmployee VALUES (132, 'Dylan' , 'A', 'Word', 'HN513777D', '1992-01-12', 'Customer Relations')
 GO 
@@ -39,13 +51,13 @@ GO
 
 -- Select key factors 
 
--- #1. Simple "SELECT" queries 
+-- #3. Simple "SELECT" queries 
 
 	SELECT 
 		E.* 
 	FROM tblEmployee E 
 
-	-- #1.1 Where practice 
+	-- #3.1 Where practice 
 
 		SELECT  -- Just a simple "WHERE" query 
 			E.* 
@@ -84,7 +96,7 @@ GO
 		FROM tblEmployee E 
 		WHERE E.EmployeeNumber IN (200, 204, 208) 
 
-	-- #1.2 More complex "SELECT" queries 
+	-- #3.2 More complex "SELECT" queries 
 
 		SELECT -- Simple year selection query 
 			YEAR(E.DateOfBirth),  
@@ -100,7 +112,7 @@ GO
 		GROUP BY YEAR(E.DateOfBirth) -- Just add every "SELECT" column that is NOT a ADDING FUNCTION 
 		ORDER BY YEAR(E.DateOfBirth) ASC -- By default it orders the result in an ascending order 
 
-	-- #1.3 "SELECT" interest functions (for functionallity) 
+	-- #3.3 "SELECT" interest functions (for functionallity) 
 
 		SELECT 
 			LEFT(E.EmployeeNumber, 1) AS Initial, -- To only get the initial 
@@ -117,3 +129,25 @@ GO
 		FROM tblEmployee 
 		GROUP BY LEFT(EmployeeLastName, 1) 
 		ORDER BY LEFT(EmployeeLastName, 1) 
+
+	-- #3.4 Use of "HAVING" command 
+
+		SELECT 
+			LEFT(E.EmployeeLastName, 1) AS Initial, 
+			COUNT(*) AS CountOfInitial
+		FROM tblEmployee E 
+		GROUP BY LEFT(E.EmployeeLastName, 1) 
+		HAVING COUNT(*) >= 50 -- It can act in later execution than the "SELECT" command 
+		ORDER BY COUNT(*) DESC 
+
+
+
+-- #@. Exercises 
+
+	-- #@1. 
+		SELECT 
+			MONTH(E.DateOfBirth) AS Mes, -- If you want the name you can use "DATENAME(MONTH, COLUMN)" 
+			COUNT(*) 
+		FROM tblEmployee E 
+		GROUP BY MONTH(E.DateOfBirth)
+		ORDER BY MONTH(E.DateOfBirth) ASC 
