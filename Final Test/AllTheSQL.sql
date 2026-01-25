@@ -9,6 +9,7 @@
 		-- #3.2. More complex "SELECT" queries 
 		-- #3.3. "SELECT" interest functions (for functionallity) 
 		-- #3.4 Use of "HAVING" command 
+	-- #@. Exercises (With levels of difficulty '*****') 
 
 
 
@@ -22,6 +23,16 @@ CREATE TABLE tblEmployee(
 	DateOfBirth DATE NOT NULL
 
 );
+
+CREATE TABLE tblTransaction(
+
+	Amount SMALLMONEY NOT NULL, 
+	DateOfTransaction SMALLDATETIME NULL, 
+	EmployeeNumber INT NOT  NULL 
+
+); 
+
+
 
 
 -- Alter key factors 
@@ -151,3 +162,13 @@ GO
 		FROM tblEmployee E 
 		GROUP BY MONTH(E.DateOfBirth)
 		ORDER BY MONTH(E.DateOfBirth) ASC 
+
+	-- #@2. 
+		SELECT 
+			E.EmployeeMiddleName AS MiddleName, 
+			COUNT(E.EmployeeMiddleName) AS Cuantity
+		FROM tblEmployee E 
+		GROUP BY E.EmployeeMiddleName
+
+
+
