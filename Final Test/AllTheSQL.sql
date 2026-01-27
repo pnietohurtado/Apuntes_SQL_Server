@@ -1,5 +1,7 @@
 -- Summary of the sql udemy course 
 
+USE [Udemy] -- We have to execute this first because is where all the data is stored
+
 -- Bibliografía 
 
 	-- #1. "Alter" command inside the tblEmployee 
@@ -9,6 +11,7 @@
 		-- #3.2. More complex "SELECT" queries 
 		-- #3.3. "SELECT" interest functions (for functionallity) 
 		-- #3.4 Use of "HAVING" command 
+		-- #3.5 Use of the "JOIN" in "SELECT" queries
 	-- #@. Exercises (With levels of difficulty '*****') 
 
 
@@ -64,9 +67,17 @@ GO
 
 -- #3. Simple "SELECT" queries 
 
-	SELECT 
+	SELECT  -- tblEmployee
 		E.* 
 	FROM tblEmployee E 
+
+	SELECT  -- tblTransaction 
+		T.* 
+	FROM tblTransaction T 
+
+	SELECT -- tblDepartment 
+		D.* 
+	FROM tblDepartment D 
 
 	-- #3.1 Where practice 
 
@@ -123,6 +134,7 @@ GO
 		GROUP BY YEAR(E.DateOfBirth) -- Just add every "SELECT" column that is NOT a ADDING FUNCTION 
 		ORDER BY YEAR(E.DateOfBirth) ASC -- By default it orders the result in an ascending order 
 
+
 	-- #3.3 "SELECT" interest functions (for functionallity) 
 
 		SELECT 
@@ -151,6 +163,42 @@ GO
 		HAVING COUNT(*) >= 50 -- It can act in later execution than the "SELECT" command 
 		ORDER BY COUNT(*) DESC 
 
+	-- #3.5 Use of the "JOIN" in "SELECT" queries
+		SELECT 
+			E.EmployeeFirstName AS First_Name, 
+			E.EmployeeLastName AS Last_Name, 
+			SUM(T.Amount) AS Transaction_Amount
+		FROM tblEmployee E
+			JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName
+		ORDER BY SUM(T.Amount) DESC 
+		
+
+		SELECT 
+			E.EmployeeFirstName AS First_Name, 
+			E.EmployeeLastName AS Last_Name, 
+			SUM(T.Amount) AS Transaction_Amount
+		FROM tblEmployee E
+			JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+		WHERE E.EmployeeNumber = 1046
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName
+		ORDER BY SUM(T.Amount) DESC 
+
+
+		SELECT 
+			E.EmployeeFirstName AS First_Name, 
+			E.EmployeeLastName AS Last_Name, 
+			SUM(T.Amount) AS Transaction_Amount
+		FROM tblEmployee E
+			LEFT JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber -- Theres an employee with the EmployeeNumber 1046 but haven't made a 
+		WHERE E.EmployeeNumber = 1046 -- transaction yet
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName
+		ORDER BY SUM(T.Amount) DESC 
+
+	-- #3.6 Using the "SUB-SELECT" 
+		SELECT 
+			D.Department 
+		FROM (SELECT Department, COUNT(*) AS NumberOfDepartment FROM tblEmployee GROUP BY Department) D 
 
 
 -- #@. Exercises 
