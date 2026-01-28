@@ -13,6 +13,8 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 		-- #3.4 Use of "HAVING" command 
 		-- #3.5 Use of the "JOIN" in "SELECT" queries
 	-- #4. Transactions
+		-- #4.1 "ROLLBACK TRAN" for a "DELETE" query
+		-- #4.2 "ROLLBACK TRAN" for a "UPDATE" query 
 	-- #@. Exercises (With levels of difficulty '*****') 
 	-- #~. Random but usefull commands 
 
@@ -54,6 +56,7 @@ CREATE TABLE tblTransaction(
 
 	ALTER TABLE tblEmployee 
 	ADD CONSTRAINT unqGovermentID UNIQUE (EmployeeGovernmentID) 
+
 
 -- Insert key factors  
 
@@ -274,7 +277,7 @@ GO
 
 -- #@. Exercises 
 
-	-- #@1. 
+	-- #@1. (*)
 		SELECT 
 			MONTH(E.DateOfBirth) AS Mes, -- If you want the name you can use "DATENAME(MONTH, COLUMN)" 
 			COUNT(*) 
@@ -282,7 +285,7 @@ GO
 		GROUP BY MONTH(E.DateOfBirth)
 		ORDER BY MONTH(E.DateOfBirth) ASC 
 
-	-- #@2. 
+	-- #@2. (*) 
 		SELECT 
 			E.EmployeeMiddleName AS MiddleName, 
 			COUNT(E.EmployeeMiddleName) AS Cuantity
@@ -320,3 +323,35 @@ GO
 
 		ALTER TABLE tblEmployee 
 		ADD CONSTRAINT PK_EmployeeNumber PRIMARY KEY (EmployeeNumber) 
+		GO
+
+	-- # Creation of "VIEW" 
+		
+		CREATE VIEW ViewByDepartment AS 
+			SELECT
+				E.EmployeeNumber AS NumberOfEmployee,
+				E.EmployeeFirstName AS FirstName, 
+				E.EmployeeLastName As LastName, 
+				E.Department AS Department, 
+				D.DepartmentHead AS HeadOfDepartment, 
+				SUM(T.Amount) AS Total 
+			FROM tblDepartment D
+				LEFT JOIN tblEmployee E ON D.Department = E.Department
+				LEFT JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+			WHERE E.EmployeeNumber > 10
+			GROUP BY E.EmployeeFirstName, E.EmployeeLastName, E.Department, D.DepartmentHead, E.EmployeeNumber
+			-- ORDER BY E.EmployeeNumber -- Cannot use the order by in de VIEW queries, such as in the sub-select ones 
+		GO
+
+		SELECT * FROM ViewByDepartment -- The propper form to call a view 
+		GO 
+
+		-- Altering and Dropping a VIEW 
+
+			ALTER VIEW ViewByDepartment AS  -- ALTER 
+				SELECT
+					E.* 
+				FROM tblEmployee E 
+			GO 
+
+			DROP VIEW ViewByDepartment -- DROP 
