@@ -4,8 +4,8 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 
 -- Bibliografía 
 
-	-- #1. "Alter" command inside the tblEmployee 
-	-- #2. "Insert" command inside tblEmployee 
+	-- #1. "ALTER" command inside the tblEmployee 
+	-- #2. "INSERT" command inside tblEmployee 
 	-- #3. Simple "SELECT" queries (ONLY 'SELECT' queries) 
 		-- #3.1. Where practice 
 		-- #3.2. More complex "SELECT" queries 
@@ -14,6 +14,7 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 		-- #3.5 Use of the "JOIN" in "SELECT" queries
 	-- #4. Transactions
 	-- #@. Exercises (With levels of difficulty '*****') 
+	-- #~. Random but usefull commands 
 
 
 
@@ -41,20 +42,22 @@ CREATE TABLE tblTransaction(
 
 -- Alter key factors 
 
--- #1. "Alter" command inside the tblEmployee 
+-- #1. "ALTER" command inside the tblEmployee 
 
-ALTER TABLE tblEmployee 
-ADD Department VARCHAR(50) NOT NULL 
-GO 
+	ALTER TABLE tblEmployee 
+	ADD Department VARCHAR(50) NOT NULL 
+	GO 
 
-ALTER TABLE tblEmployee
-ALTER COLUMN Department VARCHAR(20)
-GO 
+	ALTER TABLE tblEmployee
+	ALTER COLUMN Department VARCHAR(20)
+	GO 
 
+	ALTER TABLE tblEmployee 
+	ADD CONSTRAINT unqGovermentID UNIQUE (EmployeeGovernmentID) 
 
 -- Insert key factors  
 
--- #2. "Insert" command inside tblEmployee 
+-- #2. "INSERT" command inside tblEmployee 
 
 INSERT INTO tblEmployee VALUES (132, 'Dylan' , 'A', 'Word', 'HN513777D', '1992-01-12', 'Customer Relations')
 GO 
@@ -287,4 +290,33 @@ GO
 		GROUP BY E.EmployeeMiddleName
 
 
+-- #~. Random but usefull commands 
 
+	-- # Use of the "GETDATE()" 
+
+		BEGIN TRAN 
+			
+			ALTER TABLE tblTransaction ADD DateOfEntry DATETIME NULL 
+			
+			ALTER TABLE tblTransaction ADD CONSTRAINT defDateOfEntry DEFAULT GETDATE() for DateOfEntry 
+
+			INSERT INTO tblTransaction(Amount, EmployeeNumber) VALUES (105.33, 400) 
+
+			SELECT 
+				T.* 
+			FROM tblTransaction T 
+			WHERE T.DateOfEntry IS NOT NULL 
+
+		ROLLBACK TRAN 
+
+	-- # Use of the "CHECK" command 
+
+		ALTER TABLE tblTransaction 
+		ADD CONSTRAINT chckAmount2 CHECK (Amount > -1000 AND Amount < 1000) 
+
+		INSERT INTO tblTransaction(Amount, EmployeeNumber)  VALUES (1000, 402) 
+
+	-- # Adding a "PRIMARY KEY" for a table 
+
+		ALTER TABLE tblEmployee 
+		ADD CONSTRAINT PK_EmployeeNumber PRIMARY KEY (EmployeeNumber) 
