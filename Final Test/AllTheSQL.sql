@@ -12,6 +12,7 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 		-- #3.3. "SELECT" interest functions (for functionallity) 
 		-- #3.4 Use of "HAVING" command 
 		-- #3.5 Use of the "JOIN" in "SELECT" queries
+	-- #4. Transactions
 	-- #@. Exercises (With levels of difficulty '*****') 
 
 
@@ -195,10 +196,77 @@ GO
 		GROUP BY E.EmployeeFirstName, E.EmployeeLastName
 		ORDER BY SUM(T.Amount) DESC 
 
+
+		SELECT 
+			E.EmployeeFirstName AS First_Name, 
+			E.EmployeeLastName AS Last_Name, 
+			D.Department AS Department, 
+			SUM(T.Amount) AS Amount 
+		FROM tblDepartment D 
+			LEFT JOIN tblEmployee E ON D.Department = E.Department
+			LEFT JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+		WHERE T.EmployeeNumber IS NULL 
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName, D.Department
+
+
 	-- #3.6 Using the "SUB-SELECT" 
 		SELECT 
 			D.Department 
 		FROM (SELECT Department, COUNT(*) AS NumberOfDepartment FROM tblEmployee GROUP BY Department) D 
+
+		SELECT 
+			* 
+		FROM(
+		SELECT 
+			E.EmployeeFirstName AS First_Name, 
+			E.EmployeeLastName AS Last_Name, 
+			D.Department AS Department, 
+			T.EmployeeNumber AS TNumber,
+			SUM(T.Amount) AS Amount 
+		FROM tblDepartment D 
+			LEFT JOIN tblEmployee E ON D.Department = E.Department
+			LEFT JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName, D.Department, T.EmployeeNumber) 
+		AS newTable
+		WHERE TNumber IS NULL 
+		ORDER BY Amount 
+
+
+
+
+-- #4. Transactions
+
+	-- #4.1 "ROLLBACK TRAN" for a "DELETE" query
+
+		BEGIN TRAN 
+			
+			SELECT COUNT(*) FROM tblTransaction
+
+			DELETE 
+				tblTransaction
+			FROM tblEmployee E 
+				RIGHT JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+			WHERE E.EmployeeNumber IS NULL 
+
+			SELECT COUNT(*) FROM tblTransaction
+
+		ROLLBACK TRAN 
+
+	-- #4.2 "ROLLBACK TRAN" for a "UPDATE" query 
+
+		BEGIN TRAN 
+			
+			SELECT * FROM tblTransaction WHERE EmployeeNumber = 194
+
+			UPDATE tblTransaction
+			SET EmployeeNumber = 194 
+			OUTPUT inserted.* 
+			-- FROM tblTransaction
+			WHERE EmployeeNumber = 3 
+
+			SELECT * FROM tblTransaction WHERE EmployeeNumber = 194
+
+		ROLLBACK TRAN 
 
 
 -- #@. Exercises 
