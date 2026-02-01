@@ -215,6 +215,13 @@ GO
 		GROUP BY E.EmployeeFirstName, E.EmployeeLastName, D.Department
 
 
+		SELECT 
+			SY.text AS CODE
+		FROM sys.syscomments SY
+			JOIN sys.views SS ON SY.id = SS.object_id
+			
+
+
 	-- #3.6 Using the "SUB-SELECT" 
 		SELECT 
 			D.Department 
@@ -274,6 +281,10 @@ GO
 
 		ROLLBACK TRAN 
 
+
+-- #5. Security 
+
+	
 
 -- #@. Exercises 
 
@@ -355,3 +366,17 @@ GO
 			GO 
 
 			DROP VIEW ViewByDepartment -- DROP 
+
+		-- Adding extra rows through the views 
+
+			BEGIN TRAN 
+
+				INSERT INTO ViewByDepartment(NumberOfEmployee, Department, Total) 
+				VALUES (199, 'HR', 999.99)
+
+				SELECT 
+					* 
+				FROM ViewByDepartment
+				ORDER BY Department, NumberOfEmployee
+
+			ROLLBACK TRAN 
