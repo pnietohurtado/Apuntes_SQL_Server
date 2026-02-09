@@ -313,10 +313,22 @@ GO
 			FROM tblEmployee E 
 				JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
 
-			SELECT * FROM tblTransaction
-			INSERT INTO tblTransactionTest(Amount, DateOfTransaction) VALUES ((SELECT T.Amount FROM tblTransaction T),(SELECT T.DateOfTransaction FROM tblTransaction T) ) 
-
 		ROLLBACK TRAN
+
+
+		SELECT 
+			E.EmployeeFirstName AS FirstName, 
+			E.EmployeeLastName AS LastName, 
+			D.DepartmentHead AS Head,
+			SUM(T.Amount) AS Total
+
+		FROM tblEmployee E 
+			JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+			JOIN tblDepartment D ON E.Department = D.Department
+			JOIN tblAttendance A ON E.EmployeeNumber = A.EmployeeNumber
+		WHERE E.EmployeeNumber > 150
+		GROUP BY E.EmployeeFirstName, E.EmployeeLastName, D.DepartmentHead
+		
 
 
 -- #~. Random but usefull commands 
