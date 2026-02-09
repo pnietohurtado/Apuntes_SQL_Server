@@ -303,6 +303,21 @@ GO
 		FROM tblEmployee E 
 		GROUP BY E.EmployeeMiddleName
 
+	-- #@3. 
+		BEGIN TRAN 
+			SELECT
+				E.EmployeeNumber AS NumberOfEmployee, 
+				T.DateOfEntry AS DateEntry, 
+				E.EmployeeFirstName AS FirstName, 
+				E.EmployeeLastName AS LastName 
+			FROM tblEmployee E 
+				JOIN tblTransaction T ON E.EmployeeNumber = T.EmployeeNumber
+
+			SELECT * FROM tblTransaction
+			INSERT INTO tblTransactionTest(Amount, DateOfTransaction) VALUES ((SELECT T.Amount FROM tblTransaction T),(SELECT T.DateOfTransaction FROM tblTransaction T) ) 
+
+		ROLLBACK TRAN
+
 
 -- #~. Random but usefull commands 
 
