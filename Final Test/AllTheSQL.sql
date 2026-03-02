@@ -311,13 +311,30 @@ GO
 			CREATE UNIQUE CLUSTERED INDEX indx_ViewByDepartment on dbo.ViewByDepartment2(EmployeeNumber, Department, DateOfTransaction, TotalAmount)  -- It gives a duplicates key
 			-- when adding only the department and the employeeNumber because they are duplicated values compare to the date and the totalAmount that's why we have to add that data too 
 			-- in the index 
-
+			GO
 
 -- #7. Triggers 
 
 	
+CREATE TRIGGER tr_tblDepartment 
+    ON dbo.TblDepartment 
+    AFTER DELETE, INSERT, UPDATE
+    AS
+    BEGIN
 
+		SELECT * FROM inserted
+		SELECT * FROM deleted
 
+    SET NOCOUNT ON -- It doesn't show how many rows were affected 
+    END
+
+	
+
+BEGIN TRAN 
+INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) 
+VALUES (123, '2015-07-10', 123) 
+ROLLBACK TRAN 
+GO
 
 -- #@. Exercises 
 
