@@ -15,6 +15,9 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 	-- #4. Transactions
 		-- #4.1 "ROLLBACK TRAN" for a "DELETE" query
 		-- #4.2 "ROLLBACK TRAN" for a "UPDATE" query 
+	-- #5. Security 
+	-- #6. Indexes
+		-- #6.1 Creating an indexed view 
 	-- #@. Exercises (With levels of difficulty '*****') 
 	-- #~. Random but usefull commands 
 
@@ -280,11 +283,41 @@ GO
 			SELECT * FROM tblTransaction WHERE EmployeeNumber = 194
 
 		ROLLBACK TRAN 
-
+		GO
 
 -- #5. Security 
 
+
+
+-- #6. Indexes
+
+		-- #6.1 Creating an indexed view 
+
+			DROP VIEW ViewByDepartment2
+			GO
+
+			CREATE view ViewByDepartment2 WITH SCHEMABINDING AS 
+			SELECT 
+				D.Department, 
+				T.EmployeeNumber, 
+				T.DateOfTransaction, 
+				T.Amount AS TotalAmount 
+			FROM dbo.tblDepartment as D -- Adding dbo. is like adding a schema of the database just for the index 
+				INNER JOIN dbo.tblEmployee AS E ON D.Department = E.Department
+				INNER JOIN dbo.tblTransaction AS T ON E.EmployeeNumber = T.EmployeeNumber
+			WHERE T.EmployeeNumber BETWEEN 120 AND 139
+			GO
+
+			CREATE UNIQUE CLUSTERED INDEX indx_ViewByDepartment on dbo.ViewByDepartment2(EmployeeNumber, Department, DateOfTransaction, TotalAmount)  -- It gives a duplicates key
+			-- when adding only the department and the employeeNumber because they are duplicated values compare to the date and the totalAmount that's why we have to add that data too 
+			-- in the index 
+
+
+-- #7. Triggers 
+
 	
+
+
 
 -- #@. Exercises 
 
