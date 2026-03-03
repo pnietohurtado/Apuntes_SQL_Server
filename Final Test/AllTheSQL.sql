@@ -18,6 +18,7 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 	-- #5. Security 
 	-- #6. Indexes
 		-- #6.1 Creating an indexed view 
+	-- #7. Triggers 
 	-- #@. Exercises (With levels of difficulty '*****') 
 	-- #~. Random but usefull commands 
 
@@ -335,6 +336,59 @@ INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber)
 VALUES (123, '2015-07-10', 123) 
 ROLLBACK TRAN 
 GO
+
+
+DROP TRIGGER NameOfTrigger
+GO 
+
+CREATE TRIGGER NameOfTrigger ON ViewByDepartment 
+INSTEAD OF DELETE, INSERT 
+AS 
+BEGIN 
+	SELECT *, 'ViewByDepartment' as ViewByDepartment FROM deleted
+END 
+
+BEGIN TRAN 
+	SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
+	DELETE FROM ViewByDepartment
+	WHERE Total = 596.42 AND NumberOfEmployee = 123
+	SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
+ROLLBACK TRAN 
+GO 
+
+
+
+
+SELECT * FROM ViewByDepartment
+GO
+
+ALTER TRIGGER NameOfTrigger ON dbo.ViewByDepartment 
+INSTEAD OF DELETE 
+AS 
+BEGIN 
+
+	DECLARE @EmployeeNumber AS INT 
+	DECLARE @Amount AS SMALLMONEY
+
+	-- We create a SELECT inside to set the variable a value 
+	SELECT 
+		@EmployeeNumber = NumberOfEmployee, 
+		@Amount = Total
+	FROM deleted
+
+	-- SELECT @EmployeeNumber
+
+	-- We copy the variables into a DELETE sentence so if the variable match it delete that row 
+	DELETE tblTransaction FROM tblTransaction AS T 
+	WHERE T.EmployeeNumber = @EmployeeNumber AND T.Amount = @Amount
+
+END 
+
+BEGIN TRAN 
+	SELECT * FROM ViewByDepartment WHERE NumberOfEmployee = 123 AND Total = 596.42
+	DELETE FROM ViewByDepartment WHERE NumberOfEmployee = 123 AND Total = 596.42
+	SELECT * FROM tblTransaction WHERE EmployeeNumber = 123 AND Amount = 596.42
+ROLLBACK TRAN 
 
 -- #@. Exercises 
 
