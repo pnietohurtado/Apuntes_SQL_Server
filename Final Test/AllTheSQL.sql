@@ -371,12 +371,16 @@ BEGIN
 	DECLARE @Amount AS SMALLMONEY
 
 	-- We create a SELECT inside to set the variable a value 
-	SELECT 
-		@EmployeeNumber = NumberOfEmployee, 
-		@Amount = Total
-	FROM deleted
+	IF @@NESTLEVEL = 1 -- 0 When we execute directly without calling it from another function or query, 1 if we had it call by a query (This example), 2 if we call it from another trigger that call the trigger 
+	BEGIN
+		SELECT 
+			@EmployeeNumber = NumberOfEmployee, 
+			@Amount = Total
+		FROM deleted
+	END 
 
 	-- SELECT @EmployeeNumber
+	-- SELECT @@NESTLEVEL AS Nest_Level  It means Nested so it works exactly as an NESTED function in any other language 
 
 	-- We copy the variables into a DELETE sentence so if the variable match it delete that row 
 	DELETE tblTransaction FROM tblTransaction AS T 
@@ -385,9 +389,9 @@ BEGIN
 END 
 
 BEGIN TRAN 
-	SELECT * FROM ViewByDepartment WHERE NumberOfEmployee = 123 AND Total = 596.42
-	DELETE FROM ViewByDepartment WHERE NumberOfEmployee = 123 AND Total = 596.42
-	SELECT * FROM tblTransaction WHERE EmployeeNumber = 123 AND Amount = 596.42
+	SELECT * FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
+	DELETE FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
+	SELECT * FROM tblTransaction WHERE EmployeeNumber = 124 AND Amount = -576.77
 ROLLBACK TRAN 
 
 -- #@. Exercises 
