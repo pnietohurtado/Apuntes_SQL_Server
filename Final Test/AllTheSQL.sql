@@ -515,3 +515,13 @@ ROLLBACK TRAN
 				ORDER BY Department, NumberOfEmployee
 
 			ROLLBACK TRAN 
+
+		-- Declare variable in a function 
+
+			DECLARE @number INT 
+			SELECT 
+				@number = E.EmployeeNumber
+			FROM tblEmployee E 
+			WHERE E.EmployeeNumber = 123
+
+			SELECT @number AS 'Variable Declare' 
