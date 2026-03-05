@@ -437,6 +437,36 @@ GO
 	UNION 
 	SELECT 4
 
+
+
+
+
+
+-- #9. INTERCEPT and EXCEPT 
+
+	
+
+	SELECT 
+		*, 
+		ROW_NUMBER() OVER (ORDER BY(SELECT NULL)) % 3 AS ShouldIDelete
+	INTO tblTransactionNew2
+	FROM tblTransaction
+
+	DELETE FROM tblTransactionNew2
+	WHERE ShouldIDelete = 1
+
+
+	SELECT * FROM tblTransaction
+	INTERSECT 
+	SELECT * FROM tblTransactionNew2
+
+	SELECT * FROM tblTransaction
+	EXCEPT 
+	SELECT * FROM tblTransactionNew2
+
+
+
+
 -- #@. Exercises 
 
 	-- #@1. (*)
