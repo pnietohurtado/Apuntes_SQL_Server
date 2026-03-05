@@ -421,6 +421,22 @@ GO
 		ROLLBACK TRAN 
 
 
+
+-- #8. UNION and UNION ALL 
+
+	SELECT CONVERT(CHAR(5), 'hi')
+	UNION 
+	SELECT CONVERT(CHAR(11), 'hello there') AS Grerting -- It wont be set as the column name because it is only valid in the first select 
+
+
+	SELECT CONVERT(TINYINT, 45) AS MyColumn 
+	UNION 
+	SELECT CONVERT(BIGINT, 456) 
+
+	SELECT 'hi there'  -- Not the same variable type that is why it gives us an error 
+	UNION 
+	SELECT 4
+
 -- #@. Exercises 
 
 	-- #@1. (*)
