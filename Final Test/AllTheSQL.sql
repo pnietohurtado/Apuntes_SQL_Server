@@ -317,82 +317,109 @@ GO
 -- #7. Triggers 
 
 	
-CREATE TRIGGER tr_tblDepartment 
-    ON dbo.TblDepartment 
-    AFTER DELETE, INSERT, UPDATE
-    AS
-    BEGIN
+	CREATE TRIGGER tr_tblDepartment 
+		ON dbo.TblDepartment 
+		AFTER DELETE, INSERT, UPDATE
+		AS
+		BEGIN
 
-		SELECT * FROM inserted
-		SELECT * FROM deleted
+			SELECT * FROM inserted
+			SELECT * FROM deleted
 
-    SET NOCOUNT ON -- It doesn't show how many rows were affected 
-    END
+		SET NOCOUNT ON -- It doesn't show how many rows were affected 
+		END
 
 	
 
-BEGIN TRAN 
-INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) 
-VALUES (123, '2015-07-10', 123) 
-ROLLBACK TRAN 
-GO
+	BEGIN TRAN 
+	INSERT INTO tblTransaction(Amount, DateOfTransaction, EmployeeNumber) 
+	VALUES (123, '2015-07-10', 123) 
+	ROLLBACK TRAN 
+	GO
 
 
-DROP TRIGGER NameOfTrigger
-GO 
+	DROP TRIGGER NameOfTrigger
+	GO 
 
-CREATE TRIGGER NameOfTrigger ON ViewByDepartment 
-INSTEAD OF DELETE, INSERT 
-AS 
-BEGIN 
-	SELECT *, 'ViewByDepartment' as ViewByDepartment FROM deleted
-END 
-
-BEGIN TRAN 
-	SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
-	DELETE FROM ViewByDepartment
-	WHERE Total = 596.42 AND NumberOfEmployee = 123
-	SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
-ROLLBACK TRAN 
-GO 
-
-
-
-
-SELECT * FROM ViewByDepartment
-GO
-
-ALTER TRIGGER NameOfTrigger ON dbo.ViewByDepartment 
-INSTEAD OF DELETE 
-AS 
-BEGIN 
-
-	DECLARE @EmployeeNumber AS INT 
-	DECLARE @Amount AS SMALLMONEY
-
-	-- We create a SELECT inside to set the variable a value 
-	IF @@NESTLEVEL = 1 -- 0 When we execute directly without calling it from another function or query, 1 if we had it call by a query (This example), 2 if we call it from another trigger that call the trigger 
-	BEGIN
-		SELECT 
-			@EmployeeNumber = NumberOfEmployee, 
-			@Amount = Total
-		FROM deleted
+	CREATE TRIGGER NameOfTrigger ON ViewByDepartment 
+	INSTEAD OF DELETE, INSERT 
+	AS 
+	BEGIN 
+		SELECT *, 'ViewByDepartment' as ViewByDepartment FROM deleted
 	END 
 
-	-- SELECT @EmployeeNumber
-	-- SELECT @@NESTLEVEL AS Nest_Level  It means Nested so it works exactly as an NESTED function in any other language 
+	BEGIN TRAN 
+		SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
+		DELETE FROM ViewByDepartment
+		WHERE Total = 596.42 AND NumberOfEmployee = 123
+		SELECT * FROM ViewByDepartment WHERE Total = 596.42 AND NumberOfEmployee = 123
+	ROLLBACK TRAN 
+	GO 
 
-	-- We copy the variables into a DELETE sentence so if the variable match it delete that row 
-	DELETE tblTransaction FROM tblTransaction AS T 
-	WHERE T.EmployeeNumber = @EmployeeNumber AND T.Amount = @Amount
 
-END 
 
-BEGIN TRAN 
-	SELECT * FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
-	DELETE FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
-	SELECT * FROM tblTransaction WHERE EmployeeNumber = 124 AND Amount = -576.77
-ROLLBACK TRAN 
+
+	SELECT * FROM ViewByDepartment
+	GO
+
+	ALTER TRIGGER NameOfTrigger ON dbo.ViewByDepartment 
+	INSTEAD OF DELETE 
+	AS 
+	BEGIN 
+
+		DECLARE @EmployeeNumber AS INT 
+		DECLARE @Amount AS SMALLMONEY
+
+		-- We create a SELECT inside to set the variable a value 
+		IF @@NESTLEVEL = 1 -- 0 When we execute directly without calling it from another function or query, 1 if we had it call by a query (This example), 2 if we call it from another trigger that call the trigger 
+		BEGIN
+			SELECT 
+				@EmployeeNumber = NumberOfEmployee, 
+				@Amount = Total
+			FROM deleted
+		END 
+
+		-- SELECT @EmployeeNumber
+		-- SELECT @@NESTLEVEL AS Nest_Level  It means Nested so it works exactly as an NESTED function in any other language 
+
+		-- We copy the variables into a DELETE sentence so if the variable match it delete that row 
+		DELETE tblTransaction FROM tblTransaction AS T 
+		WHERE T.EmployeeNumber = @EmployeeNumber AND T.Amount = @Amount
+
+	END 
+
+	BEGIN TRAN 
+		SELECT * FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
+		DELETE FROM ViewByDepartment WHERE NumberOfEmployee = 124 AND Total = -576.77
+		SELECT * FROM tblTransaction WHERE EmployeeNumber = 124 AND Amount = -576.77
+	ROLLBACK TRAN 
+	GO 
+
+
+	-- Use of @@ROWCOUNT in triggers 
+		
+		DROP TRIGGER NameOfTrigger
+		GO
+		
+		CREATE  TRIGGER NameOfTrigger ON dbo.tblTransaction 
+		AFTER DELETE, INSERT, UPDATE 
+		AS 
+		BEGIN 
+			BEGIN 
+				IF @@ROWCOUNT > 0 
+				BEGIN 
+					SELECT *, 'Inserted - tblTransaction' AS ' Inserted - tblTransaction' FROM inserted
+					SELECT *, 'Deleted - tblTransaction' AS ' Deleted - tblTransaction' FROM deleted
+				END 
+			END 
+		END 
+		GO 
+
+		BEGIN TRAN 
+			SELECT * FROM tblTransaction
+			DELETE FROM tblTransaction WHERE EmployeeNumber = 658
+		ROLLBACK TRAN 
+
 
 -- #@. Exercises 
 
