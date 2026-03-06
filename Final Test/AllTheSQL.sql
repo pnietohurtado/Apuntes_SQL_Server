@@ -635,3 +635,27 @@ GO
 		FROM tblTransactionNew2 
 		GROUP BY EmployeeNumber, Amount
 		HAVING COUNT(*) > 0
+
+
+
+	-- MERGE WITH ADITIONAL COLUMNS 
+
+		BEGIN TRAN 
+			ALTER TABLE tblTransaction 
+			ADD Comments VARCHAR(50) NULL 
+			GO -- Always END a DDL with GO 
+
+			-- SELECT * FROM tblTransaction
+
+			MERGE INTO tblTransaction T -- T for Target  
+			USING (SELECT EmployeeNumber, SUM(Amount) AS TotalAmount FROM tblTransactionNew2 
+			GROUP BY EmployeeNumber) AS S 
+			ON T.EmployeeNumber = S.EmployeeNumber -- AND T.DateOfTransaction = S.DateOfTransaction 
+			WHEN MATCHED THEN 
+				UPDATE SET Amount = T.Amount + S.TotalAmount , Comments = 'MATCHED'  
+			WHEN NOT MATCHED BY TARGET THEN 
+				INSERT (Amount, EmployeeNumber, Comments) VALUES (S.TotalAmount, S.EmployeeNumber, 'Inserted Row'); 
+
+			SELECT * FROM tblTransaction
+		ROLLBACK TRAN 
+		
