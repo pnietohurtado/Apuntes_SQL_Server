@@ -598,3 +598,17 @@ GO
 			WHERE E.EmployeeNumber = 123
 
 			SELECT @number AS 'Variable Declare' 
+
+	-- IS NULL AND COALESCE 
+
+		SELECT * FROM tblEmployee WHERE EmployeeMiddleName IS NULL 
+
+		DECLARE @myOption AS VARCHAR(10) =  'Option B' 
+		SELECT ISNULL(@myOption, 'No Option') AS MyOptions  --Basically if the value of @myOption is NULL it will say 'No Option' otherwise it will print the value of the variable 
+		GO 
+
+		DECLARE @myFirstOption AS VARCHAR(10) = 'Option A' 
+		DECLARE @mySecondOption AS VARCHAR(10) = 'Option B' 
+
+		SELECT COALESCE(@myFirstOption, @mySecondOption, 'No option') AS MyOptions -- It takes as many options as you like 
+		GO -- It tracks the first not null option that it finds so if B is null but A is not then the result WON'T be 'No option' if not 'Option A' 
