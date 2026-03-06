@@ -612,3 +612,26 @@ GO
 
 		SELECT COALESCE(@myFirstOption, @mySecondOption, 'No option') AS MyOptions -- It takes as many options as you like 
 		GO -- It tracks the first not null option that it finds so if B is null but A is not then the result WON'T be 'No option' if not 'Option A' 
+
+		
+
+
+	-- MERGE 
+		BEGIN TRAN 
+			MERGE INTO tblTransaction T -- T for Target  
+			USING (SELECT EmployeeNumber, SUM(Amount) AS TotalAmount FROM tblTransactionNew2 
+			GROUP BY EmployeeNumber) AS S 
+			ON T.EmployeeNumber = S.EmployeeNumber -- AND T.DateOfTransaction = S.DateOfTransaction 
+			WHEN MATCHED THEN 
+				UPDATE SET Amount = T.Amount + S.TotalAmount 
+			WHEN NOT MATCHED BY TARGET THEN 
+				INSERT (Amount, EmployeeNumber) VALUES (S.TotalAmount, S.EmployeeNumber); 
+		ROLLBACK TRAN 
+
+		SELECT 
+			EmployeeNumber, 
+			Amount, 
+			COUNT(*)
+		FROM tblTransactionNew2 
+		GROUP BY EmployeeNumber, Amount
+		HAVING COUNT(*) > 0
