@@ -485,6 +485,45 @@ GO
 	
 
 
+
+	IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'VW_Employee2')
+	DROP PROC VW_Employee2
+	GO 
+
+	CREATE PROC VW_Employee2(@EmployeeName VARCHAR) AS 
+	BEGIN
+		SELECT E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+		FROM tblEmployee E
+		WHERE E.EmployeeFirstName = @EmployeeName
+	END 
+	GO
+
+	EXECUTE VW_Employee2 'Carolyn' 
+
+
+
+	IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'VW_Employee2')
+	DROP PROC VW_Employee2
+	GO 
+
+	CREATE PROC VW_Employee2(@Number INT) AS 
+	BEGIN
+		IF EXISTS(SELECT * FROM tblEmployee WHERE EmployeeNumber = @Number)
+		BEGIN
+			SELECT E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+			FROM tblEmployee E
+			WHERE E.EmployeeNumber = @Number
+		END
+		ELSE 
+		BEGIN 
+			SELECT 'NOT FOUND' 
+		END 
+	END 
+	GO
+
+	EXECUTE VW_Employee2 0
+	EXEC VW_Employee2 123
+
 -- #@. Exercises 
 
 	-- #@1. (*)
