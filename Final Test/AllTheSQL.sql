@@ -463,8 +463,26 @@ GO
 	SELECT * FROM tblTransaction
 	EXCEPT 
 	SELECT * FROM tblTransactionNew2
+	GO
 
+-- #10. Procedure 
+	
+	CREATE VIEW VW_Employee AS 
+	SELECT E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+	FROM tblEmployee E
+	GO 
 
+	CREATE PROC VW_Employee2 AS 
+	BEGIN
+		SELECT E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+		FROM tblEmployee E
+	END 
+	GO
+	
+	VW_Employee2
+	EXECUTE VW_Employee2
+	EXEC VW_Employee2
+	
 
 
 -- #@. Exercises 
