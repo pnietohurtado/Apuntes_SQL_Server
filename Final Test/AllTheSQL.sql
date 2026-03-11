@@ -524,6 +524,40 @@ GO
 	EXECUTE VW_Employee2 0
 	EXEC VW_Employee2 123
 
+
+
+
+
+	IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'VW_Employee2')
+	DROP PROC VW_Employee2
+	GO 
+
+	CREATE PROC VW_Employee2(@EmployeeNumberFrom INT, @EmployeeNumberTo INT) AS 
+	BEGIN
+		IF EXISTS(SELECT * FROM tblEmployee WHERE EmployeeNumber BETWEEN @EmployeeNumberFrom AND @EmployeeNumberTo)
+		BEGIN
+
+			DECLARE @EmployeeNumber INT = @EmployeeNumberFrom
+
+			WHILE @EmployeeNumber <= @EmployeeNumberTo
+			BEGIN 
+				SELECT E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+				FROM tblEmployee E
+				WHERE E.EmployeeNumber = @EmployeeNumber
+				SET @EmployeeNumber = @EmployeeNumber + 1
+				-- BREAK 
+				-- CONTINUE
+			END
+		END
+		ELSE 
+		BEGIN 
+			SELECT 'NOT FOUND' 
+		END 
+	END 
+	GO
+
+	EXEC VW_Employee2 @EmployeeNumberFrom = 323, @EmployeeNumberTo = 327
+
 -- #@. Exercises 
 
 	-- #@1. (*)
