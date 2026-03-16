@@ -19,6 +19,9 @@ USE [Udemy] -- We have to execute this first because is where all the data is st
 	-- #6. Indexes
 		-- #6.1 Creating an indexed view 
 	-- #7. Triggers 
+	-- #8. UNION and UNION ALL 
+	-- #9. INTERCEPT and EXCEPT 
+	-- #10. Procedure 
 	-- #@. Exercises (With levels of difficulty '*****') 
 	-- #~. Random but usefull commands 
 
