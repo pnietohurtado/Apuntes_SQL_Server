@@ -783,24 +783,4 @@ GO
 			SELECT * FROM tblTransaction
 		ROLLBACK TRAN 
 
-
-
-
-
-		BEGIN TRAN 
-			ALTER TABLE tblTransaction 
-			ADD Comments VARCHAR(50) NULL 
-			GO -- Always END a DDL with GO 
-
-			MERGE INTO tblTransaction T -- T for Target  
-			USING (SELECT EmployeeNumber, SUM(Amount) AS TotalAmount FROM tblTransactionNew2 
-			GROUP BY EmployeeNumber) AS S 
-			ON T.EmployeeNumber = S.EmployeeNumber -- AND T.DateOfTransaction = S.DateOfTransaction 
-			WHEN MATCHED THEN 
-				UPDATE SET Amount = T.Amount + S.TotalAmount , Comments = 'MATCHED'  
-			WHEN NOT MATCHED BY TARGET THEN 
-				INSERT (Amount, EmployeeNumber, Comments) VALUES (S.TotalAmount, S.EmployeeNumber, 'Inserted Row'); 
-
-			SELECT * FROM tblTransaction
-		ROLLBACK TRAN 
 		
