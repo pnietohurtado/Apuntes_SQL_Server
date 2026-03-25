@@ -590,7 +590,30 @@ GO
 	DECLARE @NumberOfRow INT 
 	EXECUTE VW_Employee2 @EmployeeNumberFrom = 323, @EmployeeNumberTo = 327, @NumberOfRows = @NumberOfRow OUTPUT
 	SELECT @NumberOfRow
+	GO 
 
+
+
+	CREATE PROC returnTest(@EmployeeNumber INT, @NameofEmployee VARCHAR(255) OUTPUT, @LastNameofEmployee VARCHAR(255) OUTPUT) AS 
+	BEGIN 
+		
+		IF EXISTS(SELECT * FROM tblEmployee E WHERE E.EmployeeNumber = @EmployeeNumber) 
+		BEGIN 
+
+			SELECT 
+				E.EmployeeFirstName, 
+				E.EmployeeLastName
+			FROM tblEmployee E 
+			WHERE E.EmployeeNumber = @EmployeeNumber
+			
+		END 
+		ELSE 
+		BEGIN 
+			SELECT 'Employee NOT FOUND' 
+		END 
+
+	END 
+	GO
 -- #@. Exercises 
 
 	-- #@1. (*)
