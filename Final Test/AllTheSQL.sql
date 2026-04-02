@@ -806,4 +806,62 @@ GO
 			SELECT * FROM tblTransaction
 		ROLLBACK TRAN 
 
+
+
+
+		-- =================================================================================
+
+
+
+		INSERT INTO tblAttendance (EmployeeNumber, AttendanceMonth, NumberAttendance)
+		VALUES (2, '2014-01-01', 14)
+
+		SELECT * FROM tblAttendance
+
+
+		SELECT 
+			E.Department, 
+			A.EmployeeNumber,
+			YEAR(A.AttendanceMonth) AS AttendanceYear, 
+			SUM(A.NumberAttendance)
+		FROM tblEmployee AS E 
+			JOIN tblAttendance A ON E.EmployeeNumber = A.EmployeeNumber
+		GROUP BY E.Department, A.EmployeeNumber, YEAR(A.AttendanceMonth) 
+		ORDER BY E.Department, A.EmployeeNumber, YEAR(A.AttendanceMonth)
+
+
+
+		SELECT 
+			A.EmployeeNumber, 
+			A.AttendanceMonth, 
+			A.NumberAttendance,
+			SUM(A.NumberAttendance) OVER()  -- With this in the query there's no need to use the GROUP BY function
+			AS TotalAttendance
+		FROM tblEmployee AS E 
+			JOIN tblAttendance A ON E.EmployeeNumber = A.EmployeeNumber
+
+
+		SELECT 
+			A.EmployeeNumber, 
+			A.AttendanceMonth, 
+			A.NumberAttendance, 
+			SUM(A.NumberAttendance) OVER() AS TotalAttendance, 
+			CONVERT(DECIMAL(18,7), A.NumberAttendance) / SUM(A.NumberAttendance) OVER() * 100 AS PercentageAttendance
+		FROM tblEmployee E 
+			JOIN tblAttendance A ON E.EmployeeNumber = A.EmployeeNumber
+
+
+		SELECT 
+			A.EmployeeNumber, 
+			A.AttendanceMonth, 
+			A.NumberAttendance, 
+			SUM(A.NumberAttendance) AS TotalAttendance, 
+			CONVERT(MONEY, A.NumberAttendance) / SUM(A.NumberAttendance) * 100 AS PercentageAttendance
+		FROM tblEmployee E 
+			JOIN tblAttendance A ON E.EmployeeNumber = A.EmployeeNumber
+		GROUP BY A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance
+
+
+
+		
 		
